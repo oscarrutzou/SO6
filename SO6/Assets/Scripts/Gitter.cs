@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Gitter : MonoBehaviour
 {
-    public bool onlyDisplayPathGizmoz;
+    public bool displayGridGizmoz;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
     public float nodeRadius;
@@ -14,7 +14,7 @@ public class Gitter : MonoBehaviour
     int gridSizeX, gridSizeY;
 
 
-    private void Start()
+    private void Awake()
     {
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
@@ -86,37 +86,16 @@ public class Gitter : MonoBehaviour
 
     }
 
-    public List<Node> path;
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
-
-        if (onlyDisplayPathGizmoz)
+        if (grid != null && displayGridGizmoz)
         {
-            if (path != null)
+            foreach (Node n in grid)
             {
-                foreach (Node n in path)
-                {
-                    Gizmos.color = Color.black;
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-                }
-            }
-        }
-        else
-        {
-
-            if (grid != null)
-            {
-                foreach (Node n in grid)
-                {
-                    Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                    if (path != null)
-                        if (path.Contains(n))
-                            Gizmos.color = Color.black;
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-                }
+                Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
     }
-
 }
